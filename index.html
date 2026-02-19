@@ -11,43 +11,41 @@
 
         :root {
             --p-color: #42ff71;
-            /* Glow multi-couches pour plus de profondeur */
-            --p-glow: 0 0 5px rgba(66, 255, 113, 0.8), 0 0 10px rgba(66, 255, 113, 0.4), 0 0 15px rgba(66, 255, 113, 0.2);
+            /* Glow réduit de moitié pour la lisibilité */
+            --p-glow: 0 0 4px rgba(66, 255, 113, 0.5);
             --bg-faded: #121412; 
         }
         body.theme-amber { 
             --p-color: #ffb000; 
-            --p-glow: 0 0 5px rgba(255, 176, 0, 0.8), 0 0 10px rgba(255, 176, 0, 0.4), 0 0 15px rgba(255, 176, 0, 0.2);
+            --p-glow: 0 0 4px rgba(255, 176, 0, 0.5);
             --bg-faded: #14110b; 
         }
         body.theme-white { 
             --p-color: #e0e0e0; 
-            --p-glow: 0 0 5px rgba(255, 255, 255, 0.5), 0 0 10px rgba(255, 255, 255, 0.2);
+            --p-glow: 0 0 3px rgba(255, 255, 255, 0.3);
             --bg-faded: #161616; 
         }
 
         body {
             background-color: #000; color: var(--p-color); font-family: 'Fira Code', monospace;
             margin: 0; height: 100vh; display: flex; justify-content: center; align-items: center; overflow: hidden;
-            /* Le glow s'applique à tout le texte par défaut */
             text-shadow: var(--p-glow);
         }
 
         .crt-monitor {
             width: 100vw; height: 100vh; background: var(--bg-faded); position: relative;
-            overflow: hidden; display: flex; flex-direction: column; padding: 5vw; box-sizing: border-box;
-            box-shadow: inset 0 0 50px rgba(0,0,0,0.8);
+            overflow: hidden; display: flex; flex-direction: column; padding: 25px; box-sizing: border-box;
         }
 
         @media (min-width: 768px) {
-            .crt-monitor { width: 95vw; height: 90vh; max-width: 1000px; border: 15px solid #1a1a1a; border-radius: 40px; padding: 40px; }
+            .crt-monitor { width: 95vw; height: 90vh; max-width: 900px; border: 15px solid #1a1a1a; border-radius: 40px; padding: 40px; }
         }
 
-        /* Scanlines et Grain */
+        /* Scanlines et Grain doux */
         .crt-monitor::before {
             content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: 
-                linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
+                linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%),
                 radial-gradient(circle at 50% 50%, rgba(255,255,255,0.02) 0%, transparent 80%);
             background-size: 100% 4px, 100% 100%;
             pointer-events: none; z-index: 21;
@@ -56,50 +54,52 @@
         .noise-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyBAMAAADsEZWCAAAAGFBMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADeST97AAAAB3RSTlMAVVDu/v4AfZ3OAAAARElEQVQ4y2NgQAX8DIxgIAnGZ2AEAzEwHh0tGEiC8ZlQMBCPjhYMJMH4TCgYiEdHCwaSYHwmFAzEo6MFA0kwPhMKBuIRAFidGf9p99vjAAAAAElFTkSuQmCC");
-            opacity: 0.15; pointer-events: none; z-index: 25; animation: noise 0.2s infinite;
+            opacity: 0.08; pointer-events: none; z-index: 25; animation: noise 0.2s infinite;
         }
 
-        @keyframes noise { 0% { transform: translate(0,0); } 50% { transform: translate(-0.8%, 0.5%); } 100% { transform: translate(0.2%, -0.2%); } }
+        @keyframes noise { 0% { transform: translate(0,0); } 50% { transform: translate(-0.4%, 0.2%); } 100% { transform: translate(0,0); } }
 
-        .view-content { position: relative; z-index: 30; display: none; flex-direction: column; height: 100%; animation: flicker 0.15s infinite; }
-        @keyframes flicker { 0% { opacity: 0.98; } 50% { opacity: 1; } 100% { opacity: 0.97; } }
+        .view-content { position: relative; z-index: 30; display: none; flex-direction: column; height: 100%; }
         .view-content.active { display: flex; }
 
-        header { border-bottom: 1px solid var(--p-color); margin-bottom: 15px; font-size: 0.7rem; padding-bottom: 5px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 10px var(--p-color); }
+        header { border-bottom: 1px solid var(--p-color); margin-bottom: 20px; font-size: 0.7rem; padding-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
 
         .prompt-display { 
-            font-size: 1.1rem; border: 1px solid var(--p-color); padding: 15px; margin: 10px 0; 
-            background: rgba(255, 255, 255, 0.02); box-shadow: inset 0 0 15px rgba(66, 255, 113, 0.1);
+            font-size: 1rem; border: 1px solid var(--p-color); padding: 15px; margin: 10px 0; 
+            background: rgba(255, 255, 255, 0.02); line-height: 1.4;
         }
 
         textarea {
             flex-grow: 1; background: rgba(0,0,0,0.2); color: var(--p-color); border: 1px solid var(--p-color);
-            padding: 12px; font-family: 'Fira Code', monospace; font-size: 1rem; resize: none; outline: none;
-            text-shadow: var(--p-glow); margin-bottom: 10px;
+            padding: 15px; font-family: 'Fira Code', monospace; font-size: 1rem; resize: none; outline: none;
+            text-shadow: var(--p-glow); margin-bottom: 15px;
         }
 
-        .btn-group { display: flex; flex-wrap: wrap; gap: 10px; }
+        /* --- CORRECTION BOUTONS --- */
+        .btn-group { display: flex; gap: 10px; flex-wrap: wrap; justify-content: space-between; }
+        
         button {
-            background: var(--p-color); color: #000; border: none; padding: 15px 20px;
+            background: var(--p-color); color: #000; border: none; padding: 12px 15px;
             font-family: 'Fira Code', monospace; font-weight: bold; cursor: pointer;
-            text-transform: uppercase; flex: 1 1 120px; font-size: 0.8rem;
-            box-shadow: 0 0 10px var(--p-color);
+            text-transform: uppercase; font-size: 0.75rem; flex: 1; min-width: 100px;
+            box-shadow: 0 0 5px var(--p-color); transition: all 0.2s;
         }
         button.secondary { background: transparent; color: var(--p-color); border: 1px solid var(--p-color); box-shadow: none; }
-        button.danger { background: transparent; color: #ff4757; border: 1px solid #ff4757; text-shadow: 0 0 5px #ff4757; box-shadow: none; }
-        button:active { transform: scale(0.98); filter: brightness(1.2); }
+        button.danger { background: transparent; color: #ff4757; border: 1px solid #ff4757; text-shadow: 0 0 3px #ff4757; box-shadow: none; }
+        button:hover { filter: brightness(1.2); }
+        button:active { transform: translateY(2px); }
 
         /* Archives */
-        .archive-item { border: 1px solid var(--p-color); margin-bottom: 10px; cursor: pointer; background: rgba(0,0,0,0.2); }
+        .archive-item { border: 1px solid var(--p-color); margin-bottom: 8px; cursor: pointer; background: rgba(0,0,0,0.2); }
         .archive-header { padding: 10px; display: flex; flex-direction: column; gap: 4px; }
-        .log-date { font-size: 0.65rem; opacity: 0.7; font-weight: bold; }
-        .log-prompt { font-size: 0.85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .archive-body { padding: 15px; display: none; font-size: 0.9rem; border-top: 1px dashed var(--p-color); line-height: 1.6; background: rgba(0,0,0,0.5); }
+        .log-date { font-size: 0.6rem; opacity: 0.6; }
+        .log-prompt { font-size: 0.8rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .archive-body { padding: 15px; display: none; font-size: 0.85rem; border-top: 1px dashed var(--p-color); background: rgba(0,0,0,0.4); }
         .archive-item.open .archive-body { display: block; }
 
-        .timer { font-size: 2.5rem; text-align: center; margin-bottom: 10px; font-weight: bold; }
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-thumb { background: var(--p-color); box-shadow: var(--p-glow); }
+        .timer { font-size: 2.2rem; text-align: center; margin-bottom: 10px; font-weight: bold; }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: var(--p-color); }
     </style>
 </head>
 <body>
@@ -108,35 +108,35 @@
     <div class="noise-overlay"></div>
     
     <header id="main-header">
-        <div>[ R3WR1T3_STAT10N]</div>
-        <button class="mini secondary" onclick="cycleTheme()" style="padding: 4px 8px; font-size: 0.6rem;">[ COLOR_CHG ]</button>
+        <div>[ R3WR1T3_STAT10N ]</div>
+        <button class="secondary" onclick="cycleTheme()" style="flex:none; padding: 4px 8px; font-size: 0.6rem;">[ C0L0R:CHG ]</button>
     </header>
 
     <div id="view-home" class="view-content active">
         <div id="prompt-text" class="prompt-display">> SYSTEM_READY. VEUILLEZ GENERER UN DEFI...</div>
         <div class="btn-group">
             <button onclick="generatePrompt()">[ GENERER_DEFI ]</button>
-            <button onclick="startSession()" id="start-btn" style="display:none;">[ INITIALISER_SESSI0N ]</button>
+            <button onclick="startSession()" id="start-btn" style="display:none;">[ INITIALISER_SESSION ]</button>
         </div>
     </div>
 
     <div id="view-writing" class="view-content">
-        <div id="writing-prompt-large" class="prompt-display" style="font-size: 1rem; border-bottom: 3px double var(--p-color); margin-top: 0;"></div>
+        <div id="writing-prompt-large" class="prompt-display" style="font-size: 0.9rem; border-bottom: 3px double var(--p-color); margin-top: 0;"></div>
         <div class="timer" id="timer-display">10:00</div>
         <textarea id="story-input" spellcheck="false" oninput="countWords()"></textarea>
         <div class="btn-group">
-            <button onclick="finishEarly()">[ COMMIT_DATA ]</button>
+            <button onclick="finishEarly()">[ COMMIT ]</button>
             <button onclick="cancelSession()" class="danger">[ ABORT ]</button>
-            <div style="flex:1; text-align:right; font-size:0.8rem; align-self:center; opacity: 0.8;">
-                <span id="word-count">0</span> MOTS
+            <div style="flex:none; font-size:0.75rem; align-self:center; min-width: 60px; text-align: right;">
+                <span id="word-count">0</span> W
             </div>
         </div>
     </div>
 
     <div id="view-history" class="view-content">
-        <h2 style="font-size: 1.1rem; display: flex; justify-content: space-between; margin: 0 0 10px 0;"> 
+        <h2 style="font-size: 1rem; display: flex; justify-content: space-between; margin: 0 0 10px 0;"> 
             <span>> LOG_FILES</span>
-            <button class="mini danger" onclick="clearArchives()" style="padding: 4px 8px; font-size: 0.6rem;">[ PURGE_ALL ]</button>
+            <button class="danger" onclick="clearArchives()" style="flex:none; padding: 4px 8px; font-size: 0.6rem;">[ PURGE ]</button>
         </h2>
         <div id="history-list" style="overflow-y: auto; flex-grow: 1;"></div>
         <div style="margin-top: 15px;">
@@ -144,15 +144,13 @@
         </div>
     </div>
 
-    <footer id="main-footer" style="margin-top: auto; padding-top: 10px;">
-        <button onclick="showHistory()" class="secondary" style="width:100%; padding: 8px; font-size: 0.7rem;">./list_archives</button>
+    <footer id="main-footer" style="margin-top: auto; padding-top: 15px;">
+        <button onclick="showHistory()" class="secondary" style="width:100%; padding: 10px; font-size: 0.7rem;">./list_archives</button>
     </footer>
 </div>
 
 <script>
-    // COLLE TES PROMPTS ICI
     const promptsBase = [
-        
     // TERMINE L'HISTOIRE
     { type: "Termine l'histoire", content: "L'ascenseur s'ouvrit sur un champ de blé au lieu du parking souterrain. Une brise chaude caressa mon visage." },
     { type: "Termine l'histoire", content: "Le vieil antiquaire me tendit le miroir en disant : 'Attention, celui-ci ne reflète que ce que vous avez perdu'." },
@@ -627,19 +625,11 @@
     { type: "Tags", content: "🌾 Blé, ☀️ Chaleur, 🌾 Champ, 🌾 Moisson, 🌾 Or" },
     { type: "Tags", content: " bat , 🦇 Nuit, 🌑 Grotte, 🦇 Écho, 🦇 Vol" },
     { type: "Tags", content: "🔥 Flamme, 🕯️ Mèche, 🕯️ Cire, 🕯️ Ombre, 🕯️ Lumière" }
-
-    
-    
-    ];
-
-    let currentPrompt = null;
-    let timerInterval = null;
-    let timeLeft = 600;
-    let currentTheme = 0; 
+];
+    let currentPrompt = null; let timerInterval = null; let timeLeft = 600; let currentTheme = 0; 
 
     function cycleTheme() {
-        const body = document.body;
-        currentTheme = (currentTheme + 1) % 3;
+        const body = document.body; currentTheme = (currentTheme + 1) % 3;
         body.classList.remove('theme-amber', 'theme-white');
         if (currentTheme === 1) body.classList.add('theme-amber');
         if (currentTheme === 2) body.classList.add('theme-white');
@@ -678,8 +668,7 @@
     }
 
     function startTimer() {
-        timeLeft = 600;
-        updateTimerDisplay();
+        timeLeft = 600; updateTimerDisplay();
         timerInterval = setInterval(() => {
             timeLeft--; updateTimerDisplay();
             if (timeLeft <= 0) saveStory();
@@ -687,8 +676,7 @@
     }
 
     function updateTimerDisplay() {
-        const mins = Math.floor(timeLeft / 60);
-        const secs = timeLeft % 60;
+        const mins = Math.floor(timeLeft / 60); const secs = timeLeft % 60;
         document.getElementById('timer-display').innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
     }
 
@@ -700,16 +688,16 @@
         if(text.length < 5) return showView('view-home');
         const now = new Date();
         const timestamp = `${now.toLocaleDateString()} @ ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
-        const history = JSON.parse(localStorage.getItem('pRetroFinal_v7') || '[]');
+        const history = JSON.parse(localStorage.getItem('pRetroFinal_v8') || '[]');
         history.unshift({ timeLabel: timestamp, prompt: currentPrompt.content, text: text });
-        localStorage.setItem('pRetroFinal_v7', JSON.stringify(history));
+        localStorage.setItem('pRetroFinal_v8', JSON.stringify(history));
         showHistory();
     }
 
     function showHistory() {
         showView('view-history');
         const list = document.getElementById('history-list');
-        const history = JSON.parse(localStorage.getItem('pRetroFinal_v7') || '[]');
+        const history = JSON.parse(localStorage.getItem('pRetroFinal_v8') || '[]');
         list.innerHTML = history.length ? history.map((item, idx) => `
             <div class="archive-item" onclick="toggleArchive(this)">
                 <div class="archive-header">
@@ -717,26 +705,24 @@
                     <span class="log-prompt">> ${item.prompt}</span>
                 </div>
                 <div class="archive-body" onclick="event.stopPropagation()">
-                    <div class="content-text">${item.text.replace(/\n/g, '<br>')}</div>
-                    <button class="secondary" style="margin-top:10px; width:100%; font-size:0.7rem; padding:8px;" onclick="copyText(this)">[ COPY_TO_CLIPBOARD ]</button>
+                    <div>${item.text.replace(/\n/g, '<br>')}</div>
+                    <button class="secondary" style="margin-top:10px; width:100%; font-size:0.6rem;" onclick="copyText(this)">[ COPY ]</button>
                 </div>
             </div>
         `).join('') : "> NO_LOG_FOUND";
     }
 
     function toggleArchive(el) { el.classList.toggle('open'); }
-
     function copyText(btn) {
         const text = btn.previousElementSibling.innerText;
         navigator.clipboard.writeText(text).then(() => {
-            const original = btn.innerText;
-            btn.innerText = "[ COPIED! ]";
+            const original = btn.innerText; btn.innerText = "[ COPIED! ]";
             setTimeout(() => btn.innerText = original, 2000);
         });
     }
 
     function clearArchives() {
-        if(confirm("PURGE_ALL_DATA?")) { localStorage.removeItem('pRetroFinal_v7'); showHistory(); }
+        if(confirm("PURGE?")) { localStorage.removeItem('pRetroFinal_v8'); showHistory(); }
     }
 </script>
 </body>
