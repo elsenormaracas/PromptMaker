@@ -11,7 +11,6 @@
 
         :root {
             --p-color: #42ff71;
-            /* Glow ré-accentué mais net */
             --p-glow: 0 0 6px rgba(66, 255, 113, 0.6), 0 0 2px rgba(66, 255, 113, 0.8);
             --bg-faded: #121412; 
         }
@@ -41,7 +40,6 @@
             .crt-monitor { width: 95vw; height: 90vh; max-width: 900px; border: 15px solid #1a1a1a; border-radius: 40px; padding: 40px; }
         }
 
-        /* Scanlines et Bruit */
         .crt-monitor::before {
             content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%);
@@ -73,15 +71,21 @@
             text-shadow: var(--p-glow); margin-bottom: 15px;
         }
 
-        /* --- CORRECTION BOUTONS --- */
-        .btn-group { display: flex; gap: 10px; flex-wrap: wrap; }
+        /* --- CORRECTION BOUTONS 2 PAR LIGNE --- */
+        .btn-group { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 10px; 
+            width: 100%;
+        }
         
         button {
-            background: var(--p-color); color: #000; border: none; padding: 12px 15px;
+            background: var(--p-color); color: #000; border: none; padding: 12px 5px;
             font-family: 'Fira Code', monospace; font-weight: bold; cursor: pointer;
-            text-transform: uppercase; font-size: 0.75rem; flex: 1;
-            white-space: nowrap; /* EMPÊCHE LES CROCHETS DE SAUTER */
+            text-transform: uppercase; font-size: 0.7rem;
+            white-space: nowrap;
             box-shadow: 0 0 8px var(--p-color); transition: 0.2s;
+            overflow: hidden; text-overflow: ellipsis;
         }
         button.secondary { background: transparent; color: var(--p-color); border: 1px solid var(--p-color); box-shadow: none; }
         button.danger { background: transparent; color: #ff4757; border: 1px solid #ff4757; text-shadow: 0 0 5px #ff4757; box-shadow: none; }
@@ -107,14 +111,14 @@
     
     <header id="main-header">
         <div>[ STATION_ID: CRT-500 ]</div>
-        <button class="secondary" onclick="cycleTheme()" style="flex:none; padding: 4px 8px; font-size: 0.6rem;">[ PHOSPHOR ]</button>
+        <button class="secondary" onclick="cycleTheme()" style="padding: 4px 8px; font-size: 0.6rem;">[ PHOSPHOR ]</button>
     </header>
 
     <div id="view-home" class="view-content active">
         <div id="prompt-text" class="prompt-display">> SYSTEM_READY. EN ATTENTE...</div>
         <div class="btn-group">
             <button onclick="generatePrompt()">[ GENERER_DEFI ]</button>
-            <button onclick="startSession()" id="start-btn" style="display:none;">[ INITIALISER_SESSION ]</button>
+            <button onclick="startSession()" id="start-btn" style="display:none;">[ INITIALISER ]</button>
         </div>
     </div>
 
@@ -125,16 +129,16 @@
         <div class="btn-group">
             <button onclick="finishEarly()">[ COMMIT ]</button>
             <button onclick="cancelSession()" class="danger">[ ABORT ]</button>
-            <div style="flex:none; font-size:0.75rem; align-self:center; min-width: 60px; text-align: right;">
-                <span id="word-count">0</span> W
-            </div>
+        </div>
+        <div style="font-size:0.7rem; margin-top: 10px; text-align: right; opacity: 0.7;">
+            COUNT: <span id="word-count">0</span> WORDS
         </div>
     </div>
 
     <div id="view-history" class="view-content">
         <h2 style="font-size: 1rem; display: flex; justify-content: space-between; margin: 0 0 10px 0;"> 
             <span>> LOG_FILES</span>
-            <button class="danger" onclick="clearArchives()" style="flex:none; padding: 4px 8px; font-size: 0.6rem;">[ PURGE ]</button>
+            <button class="danger" onclick="clearArchives()" style="padding: 4px 8px; font-size: 0.6rem;">[ PURGE ]</button>
         </h2>
         <div id="history-list" style="overflow-y: auto; flex-grow: 1;"></div>
         <div style="margin-top: 15px;">
@@ -203,7 +207,7 @@
         document.getElementById('timer-display').innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
     }
 
-    function finishEarly() { if(confirm("CONFIRMER LA SAUVEGARDE ?")) saveStory(); }
+    function finishEarly() { if(confirm("COMMIT DATA?")) saveStory(); }
 
     function saveStory() {
         clearInterval(timerInterval);
@@ -211,16 +215,16 @@
         if(text.length < 5) return showView('view-home');
         const now = new Date();
         const timestamp = `${now.toLocaleDateString()} @ ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
-        const history = JSON.parse(localStorage.getItem('pRetroFinal_v9') || '[]');
+        const history = JSON.parse(localStorage.getItem('pRetroFinal_v10') || '[]');
         history.unshift({ timeLabel: timestamp, prompt: currentPrompt.content, text: text });
-        localStorage.setItem('pRetroFinal_v9', JSON.stringify(history));
+        localStorage.setItem('pRetroFinal_v10', JSON.stringify(history));
         showHistory();
     }
 
     function showHistory() {
         showView('view-history');
         const list = document.getElementById('history-list');
-        const history = JSON.parse(localStorage.getItem('pRetroFinal_v9') || '[]');
+        const history = JSON.parse(localStorage.getItem('pRetroFinal_v10') || '[]');
         list.innerHTML = history.length ? history.map((item, idx) => `
             <div class="archive-item" onclick="toggleArchive(this)">
                 <div class="archive-header">
@@ -229,7 +233,7 @@
                 </div>
                 <div class="archive-body" onclick="event.stopPropagation()">
                     <div style="margin-bottom:15px; line-height:1.6;">${item.text.replace(/\n/g, '<br>')}</div>
-                    <button class="secondary" style="width:100%; font-size:0.6rem;" onclick="copyText(this)">[ COPY_TO_CLIPBOARD ]</button>
+                    <button class="secondary" style="width:100%; font-size:0.6rem;" onclick="copyText(this)">[ COPY ]</button>
                 </div>
             </div>
         `).join('') : "> NO_LOG_FOUND";
@@ -245,7 +249,7 @@
     }
 
     function clearArchives() {
-        if(confirm("PURGER TOUTES LES DONNEES ?")) { localStorage.removeItem('pRetroFinal_v9'); showHistory(); }
+        if(confirm("PURGE?")) { localStorage.removeItem('pRetroFinal_v10'); showHistory(); }
     }
 </script>
 </body>
