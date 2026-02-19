@@ -2,8 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TERMINAL_PROMPT_V1</title>
+    <title>TERMINAL_STATION_500</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap');
 
@@ -14,149 +13,167 @@
         }
 
         body {
-            background-color: #050505;
+            background-color: #000;
             color: var(--green);
             font-family: 'Fira Code', monospace;
             margin: 0;
-            overflow: hidden; /* Pour l'effet d'écran */
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            overflow: hidden;
         }
 
-        /* --- EFFET ÉCRAN COURBÉ --- */
+        /* --- CONTENEUR ÉCRAN --- */
         .crt-monitor {
             width: 95vw;
             height: 90vh;
-            max-width: 900px;
+            max-width: 1000px;
             background: var(--bg);
             position: relative;
             overflow: hidden;
-            border: 10px solid #222;
-            border-radius: 50px / 25px;
-            box-shadow: 0 0 50px rgba(0,0,0,1), inset 0 0 100px rgba(0,255,0,0.05);
+            border: 15px solid #1a1a1a;
+            border-radius: 40px / 20px;
+            box-shadow: 0 0 100px rgba(0,0,0,1);
+            padding: 40px;
+            box-sizing: border-box;
             display: flex;
             flex-direction: column;
-            padding: 30px;
-            box-sizing: border-box;
         }
 
-        /* Scanlines & Flicker */
-        .crt-monitor::before {
-            content: " ";
-            display: block;
+        /* --- EFFET BRUIT STATIQUE (Grain) --- */
+        .crt-monitor::after {
+            content: "";
             position: absolute;
-            top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
-                        linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            z-index: 10;
-            background-size: 100% 4px, 3px 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://upload.wikimedia.org/wikipedia/commons/7/76/1kxt_original_static.png');
+            opacity: 0.04; /* Ajuste ici pour plus ou moins de grain */
             pointer-events: none;
+            z-index: 100;
         }
 
-        /* Effet de lueur (Glow) */
+        /* --- SCANLINES & SCINTILLEMENT --- */
+        .overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+            background-size: 100% 3px, 2px 100%;
+            z-index: 10;
+            pointer-events: none;
+            animation: flicker 0.15s infinite;
+        }
+
+        @keyframes flicker {
+            0% { opacity: 0.97; }
+            50% { opacity: 1; }
+            100% { opacity: 0.98; }
+        }
+
+        /* --- TEXTE --- */
         .glow-text {
-            text-shadow: 0 0 8px var(--green-glow);
+            text-shadow: 0 0 10px var(--green-glow);
         }
 
-        header { border-bottom: 1px solid var(--green); margin-bottom: 20px; padding-bottom: 10px; }
+        header { border-bottom: 2px solid var(--green); margin-bottom: 20px; padding-bottom: 10px; }
         
-        .view { display: none; flex-direction: column; height: 100%; }
+        .view { display: none; flex-direction: column; height: 100%; position: relative; z-index: 5; }
         .view.active { display: flex; }
 
-        .prompt-display { font-size: 1.2rem; border: 1px dashed var(--green); padding: 20px; margin: 20px 0; background: rgba(51, 255, 51, 0.05); }
+        .prompt-display { 
+            font-size: 1.3rem; 
+            border: 1px solid var(--green); 
+            padding: 25px; 
+            margin: 20px 0; 
+            background: rgba(51, 255, 51, 0.02);
+            box-shadow: inset 0 0 15px rgba(51, 255, 51, 0.1);
+        }
 
         textarea {
             flex-grow: 1;
             background: transparent;
             color: var(--green);
             border: 1px solid var(--green);
-            padding: 15px;
+            padding: 20px;
             font-family: 'Fira Code', monospace;
             font-size: 1.1rem;
-            text-shadow: 0 0 5px var(--green-glow);
             resize: none;
             outline: none;
-            box-shadow: inset 0 0 10px var(--green-glow);
+            text-shadow: 0 0 5px var(--green-glow);
         }
 
         button {
             background: var(--green);
             color: black;
             border: none;
-            padding: 10px 20px;
+            padding: 12px 25px;
             font-family: 'Fira Code', monospace;
             font-weight: bold;
             cursor: pointer;
-            text-transform: uppercase;
             margin: 5px;
+            transition: 0.1s;
         }
 
-        button:hover { background: white; box-shadow: 0 0 15px white; }
+        button:hover { background: white; box-shadow: 0 0 20px white; }
         button.secondary { background: transparent; color: var(--green); border: 1px solid var(--green); }
 
-        .timer { font-size: 2rem; text-align: right; }
-        .stats-line { font-size: 0.8rem; margin-top: 10px; }
-        
-        ::-webkit-scrollbar { width: 8px; }
+        .timer { font-size: 2.5rem; text-align: right; margin-bottom: 10px; }
+
+        ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-thumb { background: var(--green); }
     </style>
 </head>
 <body>
 
 <div class="crt-monitor">
+    <div class="overlay"></div>
+    
     <header class="glow-text">
-        > PROMPT_MAKER_OS [Version 1.0.4] <br>
-        > (c) 1986 RE-WRITE CORP.
-        <div class="stats-line" id="count-display">PROMPTS_LOADED: 0</div>
+        [ SYSTEM: ONLINE ] <br>
+        [ MEMORY: 500_PROMPTS_LOADED ]
     </header>
 
     <div id="view-home" class="view active">
-        <div id="category-label" style="text-decoration: underline;">SYSTEM_READY</div>
-        <div id="prompt-text" class="prompt-display glow-text">APP_IDLE: ATTENTE_COMMANDE...</div>
+        <div id="prompt-text" class="prompt-display glow-text">
+            > EN ATTENTE D'INSTRUCTIONS...
+        </div>
         <div>
-            <button onclick="generatePrompt()">[ EXEC_RANDOM_PROMPT ]</button>
-            <button onclick="startSession()" id="start-btn" style="display:none;">[ INITIALISER_SEQUENCE_ECRITURE ]</button>
+            <button onclick="generatePrompt()">[ GENERER_UN_DEFI ]</button>
+            <button onclick="startSession()" id="start-btn" style="display:none;">[ LANCER_SESSION ]</button>
         </div>
     </div>
 
     <div id="view-writing" class="view">
         <div class="timer glow-text" id="timer-display">10:00</div>
-        <div id="writing-prompt-ref" style="font-size: 0.8rem; margin-bottom: 10px; opacity: 0.8;"></div>
         <textarea id="story-input" spellcheck="false" oninput="countWords()"></textarea>
-        <div class="stats-line">
-            MOTS: <span id="word-count">0</span> | FOCUS_MODE: ON
-            <button onclick="finishEarly()" class="secondary" style="float:right;">[ FORCE_SAVE ]</button>
+        <div style="margin-top: 10px;">
+            MOTS: <span id="word-count">0</span>
+            <button onclick="finishEarly()" class="secondary" style="float:right;">[ TERMINER ]</button>
         </div>
     </div>
 
     <div id="view-history" class="view">
-        <h2 class="glow-text"> ARCHIVES_DATA </h2>
+        <h2 class="glow-text"> > ARCHIVES_LOCALES </h2>
         <div id="history-list" style="overflow-y: auto; flex-grow: 1;"></div>
         <div style="margin-top: 20px;">
-            <button onclick="showView('view-home')">[ RETOUR ]</button>
+            <button onclick="showView('view-home')">[ MENU_PRINCIPAL ]</button>
         </div>
     </div>
 
     <footer style="margin-top: 20px;">
-        <button onclick="showHistory()" class="secondary">/DIR/ARCHIVES</button>
+        <button onclick="showHistory()" class="secondary">/root/history</button>
     </footer>
 </div>
 
 <script>
-    // COLLE TES BLOCS ICI (500 PROMPTS)
+    // COLLE TES 5 BLOCS ICI
     const promptsBase = [
-        { type: "STORY_START", content: "L'ordinateur m'a répondu. Pas avec du code, mais avec un poème." }
+        { type: "SYSTEM", content: "Vous êtes le dernier technicien d'un serveur oublié." }
     ];
 
     let currentPrompt = null;
     let timerInterval = null;
     let timeLeft = 600;
-
-    window.onload = () => {
-        document.getElementById('count-display').innerText = `PROMPTS_LOADED: ${promptsBase.length}`;
-    };
 
     function showView(viewId) {
         document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
@@ -166,14 +183,12 @@
     function generatePrompt() {
         const randomIndex = Math.floor(Math.random() * promptsBase.length);
         currentPrompt = promptsBase[randomIndex];
-        document.getElementById('category-label').innerText = `TYPE: ${currentPrompt.type}`;
         document.getElementById('prompt-text').innerText = `> ${currentPrompt.content}`;
         document.getElementById('start-btn').style.display = 'inline-block';
     }
 
     function startSession() {
         showView('view-writing');
-        document.getElementById('writing-prompt-ref').innerText = `PROMPT: ${currentPrompt.content}`;
         document.getElementById('story-input').value = "";
         document.getElementById('story-input').focus();
         startTimer();
@@ -200,37 +215,29 @@
         document.getElementById('timer-display').innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
     }
 
-    function finishEarly() { if(confirm("SAUVEGARDER_DONNEES?")) saveStory(); }
+    function finishEarly() { if(confirm("SAVE_DATA?")) saveStory(); }
 
     function saveStory() {
         clearInterval(timerInterval);
         const text = document.getElementById('story-input').value;
         if(text.length < 5) return showView('view-home');
-
-        const entry = {
-            date: new Date().toLocaleDateString('fr-FR'),
-            prompt: currentPrompt.content,
-            text: text
-        };
-
-        const history = JSON.parse(localStorage.getItem('pMaker_retro') || '[]');
-        history.unshift(entry);
-        localStorage.setItem('pMaker_retro', JSON.stringify(history));
+        const history = JSON.parse(localStorage.getItem('pRetro') || '[]');
+        history.unshift({ date: new Date().toLocaleDateString(), prompt: currentPrompt.content, text: text });
+        localStorage.setItem('pRetro', JSON.stringify(history));
         showHistory();
     }
 
     function showHistory() {
         showView('view-history');
         const list = document.getElementById('history-list');
-        const history = JSON.parse(localStorage.getItem('pMaker_retro') || '[]');
-        list.innerHTML = "";
-        history.forEach(item => {
-            list.innerHTML += `<div style="border: 1px solid var(--green); padding: 10px; margin-bottom: 10px;">
+        const history = JSON.parse(localStorage.getItem('pRetro') || '[]');
+        list.innerHTML = history.map(item => `
+            <div style="border: 1px solid var(--green); padding: 10px; margin-bottom: 10px;">
                 <small>${item.date}</small><br>
                 <strong>> ${item.prompt}</strong><br>
                 <p>${item.text}</p>
-            </div>`;
-        });
+            </div>
+        `).join('');
     }
 </script>
 </body>
