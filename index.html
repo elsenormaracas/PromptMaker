@@ -2,20 +2,35 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>TERMINAL_STATION_500</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TERMINAL_STATION_MULTI_P</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap');
 
         :root {
-            --green: #42ff71;
-            --green-glow: rgba(66, 255, 113, 0.5);
-            /* Un noir fané, tirant un peu sur le gris/bleu très sombre */
+            /* Couleurs par défaut (Vert) */
+            --p-color: #42ff71;
+            --p-glow: rgba(66, 255, 113, 0.4);
             --bg-faded: #121412; 
         }
 
+        /* Thème Ambre */
+        body.theme-amber {
+            --p-color: #ffb000;
+            --p-glow: rgba(255, 176, 0, 0.4);
+            --bg-faded: #14110b;
+        }
+
+        /* Thème Blanc */
+        body.theme-white {
+            --p-color: #e0e0e0;
+            --p-glow: rgba(255, 255, 255, 0.3);
+            --bg-faded: #161616;
+        }
+
         body {
-            background-color: #050505;
-            color: var(--green);
+            background-color: #000;
+            color: var(--p-color);
             font-family: 'Fira Code', monospace;
             margin: 0;
             height: 100vh;
@@ -23,183 +38,128 @@
             justify-content: center;
             align-items: center;
             overflow: hidden;
+            transition: color 0.3s ease;
         }
 
-        /* --- LE MONITEUR --- */
         .crt-monitor {
-            width: 95vw;
-            height: 90vh;
-            max-width: 1000px;
+            width: 100vw; height: 100vh;
             background: var(--bg-faded);
             position: relative;
             overflow: hidden;
-            border: 20px solid #1a1a1a;
-            border-radius: 40px;
-            /* Lueur interne de la dalle */
-            box-shadow: inset 0 0 100px rgba(0,0,0,0.8), 0 0 50px rgba(0,0,0,1);
-            padding: 40px;
-            box-sizing: border-box;
             display: flex;
             flex-direction: column;
+            padding: 5vw;
+            box-sizing: border-box;
+            transition: background 0.3s ease;
         }
 
-        /* --- EFFET VITRE SALE & REFLET --- */
+        @media (min-width: 768px) {
+            .crt-monitor { width: 95vw; height: 90vh; max-width: 1000px; border: 15px solid #1a1a1a; border-radius: 40px; padding: 40px; }
+        }
+
         .crt-monitor::before {
-            content: "";
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            /* Simule une vitre un peu grasse avec des reflets et du vignettage */
-            background: 
-                radial-gradient(circle at 50% 50%, rgba(255,255,255,0.02) 0%, transparent 80%),
-                linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%),
-                radial-gradient(rgba(100, 100, 100, 0.05), transparent);
-            background-size: 100% 100%, 100% 4px, 100% 100%;
-            pointer-events: none;
-            z-index: 20;
+            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.02) 0%, transparent 80%),
+                        linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
+            background-size: 100% 100%, 100% 3px;
+            pointer-events: none; z-index: 20;
         }
 
-        /* --- BRUIT STATIQUE ET SCINTILLEMENT --- */
         .noise-overlay {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyBAMAAADsEZWCAAAAGFBMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADeST97AAAAB3RSTlMAVVDu/v4AfZ3OAAAARElEQVQ4y2NgQAX8DIxgIAnGZ2AEAzEwHh0tGEiC8ZlQMBCPjhYMJMH4TCgYiEdHCwaSYHwmFAzEo6MFA0kwPhMKBuIRAFidGf9p99vjAAAAAElFTkSuQmCC");
-            opacity: 0.12; /* Bruit bien visible */
-            pointer-events: none;
-            z-index: 25;
-            animation: noise 0.2s infinite;
+            opacity: 0.08; pointer-events: none; z-index: 25; animation: noise 0.3s infinite;
         }
 
-        /* --- SCANTINES MOUVANTES --- */
-        .scanlines {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(
-                to bottom,
-                transparent 0%,
-                rgba(0, 255, 0, 0.03) 50%,
-                transparent 100%
-            );
-            background-size: 100% 8px;
-            animation: scanlineMove 10s linear infinite;
-            pointer-events: none;
-            z-index: 15;
-        }
+        @keyframes noise { 0% { transform: translate(0,0); } 50% { transform: translate(-0.5%, -0.5%); } 100% { transform: translate(0,0); } }
 
-        @keyframes noise {
-            0% { transform: translate(0,0); }
-            10% { transform: translate(-1%,-1%); }
-            20% { transform: translate(1%,1%); }
-            100% { transform: translate(0,0); }
-        }
-
-        @keyframes scanlineMove {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(100%); }
-        }
-
-        @keyframes flicker {
-            0% { opacity: 0.95; }
-            5% { opacity: 0.85; }
-            10% { opacity: 0.98; }
-            100% { opacity: 1; }
-        }
-
-        .view-content {
-            position: relative;
-            z-index: 30;
-            animation: flicker 0.1s infinite;
-            display: none;
-            flex-direction: column;
-            height: 100%;
-        }
-        
+        .view-content { position: relative; z-index: 30; display: none; flex-direction: column; height: 100%; }
         .view-content.active { display: flex; }
 
-        .glow-text {
-            text-shadow: 0 0 12px var(--green-glow);
-            letter-spacing: 1px;
-        }
+        .glow-text { text-shadow: 0 0 10px var(--p-glow); }
 
-        header { border-bottom: 2px solid var(--green); margin-bottom: 20px; padding-bottom: 10px; opacity: 0.8; }
-        
+        header { border-bottom: 1px solid var(--p-color); margin-bottom: 15px; font-size: 0.7rem; padding-bottom: 5px; display: flex; justify-content: space-between; }
+
         .prompt-display { 
-            font-size: 1.3rem; 
-            border: 1px solid var(--green); 
-            padding: 25px; 
-            margin: 20px 0; 
-            background: rgba(0, 255, 0, 0.05);
+            font-size: 1.1rem; border: 1px solid var(--p-color); padding: 15px; margin: 10px 0; 
+            background: rgba(255, 255, 255, 0.02); flex-grow: 0; max-height: 40%; overflow-y: auto; 
         }
 
         textarea {
-            flex-grow: 1;
-            background: rgba(0,0,0,0.2);
-            color: var(--green);
-            border: 1px solid var(--green);
-            padding: 20px;
-            font-family: 'Fira Code', monospace;
-            font-size: 1.1rem;
-            resize: none;
-            outline: none;
-            text-shadow: 0 0 5px var(--green-glow);
+            flex-grow: 1; background: rgba(0,0,0,0.1); color: var(--p-color); border: 1px solid var(--p-color);
+            padding: 12px; font-family: 'Fira Code', monospace; font-size: 1rem; resize: none; outline: none;
+            text-shadow: 0 0 5px var(--p-glow); margin-bottom: 10px;
         }
+
+        .btn-group { display: flex; flex-wrap: wrap; gap: 10px; }
 
         button {
-            background: var(--green);
-            color: #121412;
-            border: none;
-            padding: 12px 25px;
-            font-family: 'Fira Code', monospace;
-            font-weight: bold;
-            cursor: pointer;
-            margin: 5px;
-            text-transform: uppercase;
+            background: var(--p-color); color: #121412; border: none; padding: 15px 20px;
+            font-family: 'Fira Code', monospace; font-weight: bold; cursor: pointer;
+            text-transform: uppercase; flex: 1 1 140px; font-size: 0.9rem; transition: 0.2s;
         }
 
-        button:hover { background: #fff; box-shadow: 0 0 20px #fff; }
-        button.secondary { background: transparent; color: var(--green); border: 1px solid var(--green); }
+        button:active { transform: scale(0.95); }
+        button.secondary { background: transparent; color: var(--p-color); border: 1px solid var(--p-color); }
+        button.mini { padding: 5px 10px; font-size: 0.6rem; flex: none; }
 
-        .timer { font-size: 2.5rem; text-align: right; margin-bottom: 10px; }
+        .timer { font-size: 2rem; text-align: center; margin-bottom: 10px; }
+
+        @media (max-width: 480px) {
+            header { font-size: 0.6rem; }
+            .prompt-display { font-size: 1rem; padding: 10px; }
+            button { padding: 12px 10px; font-size: 0.8rem; }
+            .timer { font-size: 1.5rem; }
+        }
+
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: var(--p-color); }
     </style>
 </head>
 <body>
 
 <div class="crt-monitor">
     <div class="noise-overlay"></div>
-    <div class="scanlines"></div>
     
+    <header class="glow-text">
+        <div>[ SYSTEM_READY ]</div>
+        <button class="mini secondary" onclick="cycleTheme()">[ COLOR_CHG ]</button>
+    </header>
+
     <div id="view-home" class="view-content active">
-        <header class="glow-text">
-            [ SYSTEM VERSION 4.0.2 - RE-WRITE TERMINAL ]<br>
-            [ STATUS: DIRTY_SCREEN_MODE_ACTIVE ]
-        </header>
         <div id="prompt-text" class="prompt-display glow-text">
-            > CHARGEMENT DU NOYAU... PRÊT.
+            > CHARGEMENT... PRÊT. LANCEZ UNE COMMANDE.
         </div>
-        <div>
+        <div class="btn-group">
             <button onclick="generatePrompt()">[ GENERER_DEFI ]</button>
-            <button onclick="startSession()" id="start-btn" style="display:none;">[ START_ECRITURE ]</button>
+            <button onclick="startSession()" id="start-btn" style="display:none;">[ START ]</button>
         </div>
     </div>
 
     <div id="view-writing" class="view-content">
         <div class="timer glow-text" id="timer-display">10:00</div>
-        <textarea id="story-input" spellcheck="false" oninput="countWords()"></textarea>
-        <div style="margin-top: 10px;">
-            MOTS_COUNT: <span id="word-count">0</span>
-            <button onclick="finishEarly()" class="secondary" style="float:right;">[ SAVE_AND_EXIT ]</button>
+        <textarea id="story-input" spellcheck="false" oninput="countWords()" placeholder="Entrez du texte..."></textarea>
+        <div class="btn-group">
+            <button onclick="finishEarly()" class="secondary" style="flex:2;">[ SAVE_AND_EXIT ]</button>
+            <div style="flex:1; text-align:right; font-size:0.8rem; align-self:center;">
+                <span id="word-count">0</span> MOTS
+            </div>
         </div>
     </div>
 
     <div id="view-history" class="view-content">
-        <h2 class="glow-text"> > DATA_RECOVERY </h2>
-        <div id="history-list" style="overflow-y: auto; flex-grow: 1;"></div>
-        <div style="margin-top: 20px;">
-            <button onclick="showView('view-home')">[ RETURN ]</button>
+        <h2 class="glow-text" style="font-size: 1.2rem; display: flex; justify-content: space-between;"> 
+            <span>> ARCHIVES</span>
+            <button class="mini secondary" onclick="clearArchives()" style="color: #ff4757; border-color: #ff4757;">[ CLEAR_ALL ]</button>
+        </h2>
+        <div id="history-list" style="overflow-y: auto; flex-grow: 1; font-size: 0.85rem; border-top: 1px dashed var(--p-color); padding-top: 10px;"></div>
+        <div style="margin-top: 10px;">
+            <button onclick="showView('view-home')" style="width:100%;">[ RETURN ]</button>
         </div>
     </div>
 
-    <footer style="margin-top: 20px; z-index: 30;">
-        <button onclick="showHistory()" class="secondary">./archives</button>
+    <footer style="margin-top: auto; padding-top: 10px;">
+        <button onclick="showHistory()" class="secondary" style="width:100%; padding: 8px; font-size: 0.7rem;">/usr/bin/history</button>
     </footer>
 </div>
 
@@ -207,6 +167,7 @@
     // COLLE TES 5 BLOCS ICI
     const promptsBase = [
         { type: "IDÉE", content: "Un monde où la seule monnaie est le temps qu'il vous reste à vivre." }
+        
     // TERMINE L'HISTOIRE
     { type: "Termine l'histoire", content: "L'ascenseur s'ouvrit sur un champ de blé au lieu du parking souterrain. Une brise chaude caressa mon visage." },
     { type: "Termine l'histoire", content: "Le vieil antiquaire me tendit le miroir en disant : 'Attention, celui-ci ne reflète que ce que vous avez perdu'." },
@@ -687,6 +648,15 @@
     let currentPrompt = null;
     let timerInterval = null;
     let timeLeft = 600;
+    let currentTheme = 0; // 0: Vert, 1: Ambre, 2: Blanc
+
+    function cycleTheme() {
+        const body = document.body;
+        currentTheme = (currentTheme + 1) % 3;
+        body.classList.remove('theme-amber', 'theme-white');
+        if (currentTheme === 1) body.classList.add('theme-amber');
+        if (currentTheme === 2) body.classList.add('theme-white');
+    }
 
     function showView(viewId) {
         document.querySelectorAll('.view-content').forEach(v => v.classList.remove('active'));
@@ -697,7 +667,7 @@
         const randomIndex = Math.floor(Math.random() * promptsBase.length);
         currentPrompt = promptsBase[randomIndex];
         document.getElementById('prompt-text').innerText = `> ${currentPrompt.content}`;
-        document.getElementById('start-btn').style.display = 'inline-block';
+        document.getElementById('start-btn').style.display = 'block';
     }
 
     function startSession() {
@@ -728,29 +698,36 @@
         document.getElementById('timer-display').innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
     }
 
-    function finishEarly() { if(confirm("CONFIRMER SAUVEGARDE ?")) saveStory(); }
+    function finishEarly() { if(confirm("SAVE DATA?")) saveStory(); }
 
     function saveStory() {
         clearInterval(timerInterval);
         const text = document.getElementById('story-input').value;
         if(text.length < 5) return showView('view-home');
-        const history = JSON.parse(localStorage.getItem('pRetroV2') || '[]');
+        const history = JSON.parse(localStorage.getItem('pRetroFinal') || '[]');
         history.unshift({ date: new Date().toLocaleDateString(), prompt: currentPrompt.content, text: text });
-        localStorage.setItem('pRetroV2', JSON.stringify(history));
+        localStorage.setItem('pRetroFinal', JSON.stringify(history));
         showHistory();
     }
 
     function showHistory() {
         showView('view-history');
         const list = document.getElementById('history-list');
-        const history = JSON.parse(localStorage.getItem('pRetroV2') || '[]');
-        list.innerHTML = history.map(item => `
-            <div style="border: 1px solid var(--green); padding: 10px; margin-bottom: 10px; background: rgba(0,255,0,0.02);">
+        const history = JSON.parse(localStorage.getItem('pRetroFinal') || '[]');
+        list.innerHTML = history.length ? history.map(item => `
+            <div style="border-bottom: 1px solid var(--p-color); padding: 10px 0; margin-bottom: 10px; opacity: 0.8;">
                 <small>${item.date}</small><br>
                 <strong>> ${item.prompt}</strong><br>
-                <p>${item.text}</p>
+                <p style="margin:5px 0 0 0; line-height: 1.4;">${item.text}</p>
             </div>
-        `).join('');
+        `).join('') : "> AUCUNE_DATA_TROUVEE";
+    }
+
+    function clearArchives() {
+        if(confirm("EFFACER TOUTES LES ARCHIVES DÉFINITIVEMENT ?")) {
+            localStorage.removeItem('pRetroFinal');
+            showHistory();
+        }
     }
 </script>
 </body>
