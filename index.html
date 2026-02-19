@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>1RE_WRITE_STATION</title>
+    <title>RE_WRITE_STATION</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap');
 
@@ -166,9 +166,7 @@
 <script>
     // COLLE TES 5 BLOCS ICI
     const promptsBase = [
-        { type: "IDÉE", content: "Un monde où la seule monnaie est le temps qu'il vous reste à vivre." },
-        
-     // TERMINE L'HISTOIRE
+           // TERMINE L'HISTOIRE
     { type: "Termine l'histoire", content: "L'ascenseur s'ouvrit sur un champ de blé au lieu du parking souterrain. Une brise chaude caressa mon visage." },
     { type: "Termine l'histoire", content: "Le vieil antiquaire me tendit le miroir en disant : 'Attention, celui-ci ne reflète que ce que vous avez perdu'." },
     { type: "Termine l'histoire", content: "J'ai trouvé une clé dans ma poche ce matin. Le problème, c'est que je ne porte pas mon propre pantalon." },
@@ -183,9 +181,36 @@
     { type: "Termine l'histoire", content: "L'ombre de l'arbre au milieu du jardin ne suivait pas la course du soleil, elle pointait obstinément vers la cave." },
     { type: "Termine l'histoire", content: "Il a croqué dans la pomme et a soudainement entendu les pensées de tous les gens présents dans la pièce." },
     { type: "Termine l'histoire", content: "La radio s'est mise à diffuser les informations du 14 juillet 2085. Le présentateur semblait paniqué." },
-    { type: "Termine l'histoire", content: "En creusant pour planter ses rosiers, elle est tombée sur un coffret contenant son propre journal intime, terminé." }
+    { type: "Termine l'histoire", content: "En creusant pour planter ses rosiers, elle est tombée sur un coffret contenant son propre journal intime, terminé." },
 
+    // IDÉES / SCÉNARIOS
+    { type: "Idée", content: "Un astronaute revient sur Terre mais découvre que l'humanité a disparu et a été remplacée par des versions végétales de nous-mêmes." },
+    { type: "Idée", content: "Écris un dialogue entre une personne qui veut vendre son âme et un démon qui trouve que son âme n'a aucune valeur marchande." },
+    { type: "Idée", content: "Décris une ville où le silence est une monnaie d'échange : plus tu parles, plus tu t'appauvris." },
+    { type: "Idée", content: "Deux robots de nettoyage discutent de la beauté d'un coucher de soleil qu'ils ne peuvent pas voir car ils sont au sous-sol." },
+    { type: "Idée", content: "Un homme découvre qu'il est un personnage secondaire dans un roman policier et tente de devenir le protagoniste." },
+    { type: "Idée", content: "Une lettre d'amour écrite par une intelligence artificielle à un grille-pain qui ne répond jamais." },
+    { type: "Idée", content: "Raconte la journée d'un super-héros dont le seul pouvoir est de faire pousser les fleurs instantanément." },
+    { type: "Idée", content: "Un monde où chaque mensonge laisse une marque colorée sur la peau du menteur." },
+    { type: "Idée", content: "Décris la rencontre entre un voyageur du temps du XIXe siècle et un adolescent accro à son smartphone." },
+    { type: "Idée", content: "Une enquête criminelle où le seul témoin est un perroquet qui ne parle qu'en rimes." },
+    { type: "Idée", content: "Imagine une bibliothèque où l'on n'emprunte pas des livres, mais les souvenirs de personnes réelles." },
+    { type: "Idée", content: "Le dernier homme sur Terre entend frapper à sa porte. Il décide de ne pas ouvrir et de préparer du thé." },
+    { type: "Idée", content: "Un enfant trouve une boussole qui n'indique pas le Nord, mais l'endroit où se cache son plus grand rêve." },
+    { type: "Idée", content: "Raconte l'histoire d'un parfum qui permet de voyager dans le souvenir précis lié à son odeur." },
+    { type: "Idée", content: "Un dictionnaire magique où chaque mot que l'on efface disparaît de la réalité." },
 
+    // TAGS (Inspiration libre)
+    { type: "Tags", content: "⚓ Ancre, 🌫️ Brouillard, 🎻 Violon, 🍷 Poison, 🗝️ Grenier" },
+    { type: "Tags", content: "🚀 Station, 🪴 Géranium, 🤖 Bug, 📬 Lettre, ☕ Amertume" },
+    { type: "Tags", content: "🎭 Masque, 🌑 Éclipse, 🐺 Hurlement, ❄️ Neige, 🕯️ Bougie" },
+    { type: "Tags", content: "🎨 Palette, 🖼️ Portrait, 🏛️ Musée, 🔦 Vol, 🧤 Gants" },
+    { type: "Tags", content: "🌊 Épave, 🐚 Coquillage, 🗺️ Carte, 💎 Trésor, 🦜 Perroquet" },
+    { type: "Tags", content: "🧶 Laine, 🐈 Chat, 🪑 Fauteuil, 📚 Grimoire, 💨 Courant d'air" },
+    { type: "Tags", content: "🌃 Néons, 🍜 Ramen, 🏮 Lanterne, 🧧 Secret, 🚕 Pluie" },
+    { type: "Tags", content: "🎹 Piano, 🎼 Partition, 👻 Fantôme, 🍷 Vin, 🏚️ Manoir" },
+    { type: "Tags", content: "🌻 Soleil, 🧺 Panier, 🐝 Abeille, 👒 Chapeau, 🍯 Miel" },
+    { type: "Tags", content: "🐉 Écaille, 🗡️ Épée, 🏔️ Sommet, 🧗 Corde, ❄️ Altitude" }
 
     ];
 
