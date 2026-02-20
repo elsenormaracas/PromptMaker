@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TERMINAL_STATION_500</title>
+    <title>PR0MPT_MASTER</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💾</text></svg>">
     
     <style>
@@ -113,15 +113,15 @@
     <div class="noise-overlay"></div>
     
     <header id="main-header">
-        <div>[ STATION_ID: CRT-500 ]</div>
-        <button class="secondary" onclick="cycleTheme()" style="padding: 4px 8px; font-size: 0.6rem;">[ PHOSPHOR ]</button>
+        <div>[ PR0MPT_MASTER : 5000 ]</div>
+        <button class="secondary" onclick="cycleTheme()" style="padding: 4px 8px; font-size: 0.6rem;">[ C0L0R_CHG ]</button>
     </header>
 
     <div id="view-home" class="view-content active">
         <div id="prompt-text" class="prompt-display">> SYSTEM_READY. EN ATTENTE...</div>
         <div class="btn-group">
-            <button onclick="generatePrompt()">[ GENERER_DEFI ]</button>
-            <button onclick="startSession()" id="start-btn" style="display:none;">[ INITIALISER ]</button>
+            <button onclick="generatePrompt()">[ N0UVEAU_DEFI ]</button>
+            <button onclick="startSession()" id="start-btn" style="display:none;">[ DEMARRER ]</button>
         </div>
     </div>
 
@@ -130,17 +130,17 @@
         <div class="timer" id="timer-display">10:00</div>
         <textarea id="story-input" spellcheck="false" oninput="countWords()"></textarea>
         <div class="btn-group">
-            <button onclick="cancelSession()" class="danger">[ ABORT ]</button>
-            <button onclick="finishEarly()">[ COMMIT ]</button>
+            <button onclick="cancelSession()" class="danger">[ ANNULER ]</button>
+            <button onclick="finishEarly()">[ SAUVER ]</button>
         </div>
         <div style="font-size:0.7rem; margin-top: 10px; text-align: right; opacity: 0.7;">
-            COUNT: <span id="word-count">0</span> WORDS
+            COMPTE: <span id="word-count">0</span> MOTS
         </div>
     </div>
 
     <div id="view-history" class="view-content">
         <h2 style="font-size: 1rem; display: flex; justify-content: space-between; margin: 0 0 10px 0;"> 
-            <span>> LOG_FILES</span>
+            <span>> ARCHIVES</span>
             <button class="danger" onclick="clearArchives()" style="flex:none; padding: 4px 8px; font-size: 0.6rem;">[ PURGE ]</button>
         </h2>
         <div id="history-list" style="overflow-y: auto; flex-grow: 1;"></div>
@@ -689,7 +689,7 @@
         document.getElementById('timer-display').innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
     }
 
-    function finishEarly() { if(confirm("COMMIT DATA?")) saveStory(); }
+    function finishEarly() { if(confirm("ENREGISTRER?")) saveStory(); }
 
     function saveStory() {
         clearInterval(timerInterval);
@@ -710,28 +710,28 @@
         list.innerHTML = history.length ? history.map((item, idx) => `
             <div class="archive-item" onclick="toggleArchive(this)">
                 <div class="archive-header">
-                    <span class="log-date">[RECORDED: ${item.timeLabel}]</span>
+                    <span class="log-date">[ENREGSTR: ${item.timeLabel}]</span>
                     <span class="log-prompt">> ${item.prompt}</span>
                 </div>
                 <div class="archive-body" onclick="event.stopPropagation()">
                     <div style="margin-bottom:15px; line-height:1.6;">${item.text.replace(/\n/g, '<br>')}</div>
-                    <button class="secondary" style="width:100%; font-size:0.6rem;" onclick="copyText(this)">[ COPY ]</button>
+                    <button class="secondary" style="width:100%; font-size:0.6rem;" onclick="copyText(this)">[ C0PIER ]</button>
                 </div>
             </div>
-        `).join('') : "> NO_LOG_FOUND";
+        `).join('') : "> ARCHIVES_INTROUVABLES";
     }
 
     function toggleArchive(el) { el.classList.toggle('open'); }
     function copyText(btn) {
         const text = btn.previousElementSibling.innerText;
         navigator.clipboard.writeText(text).then(() => {
-            const original = btn.innerText; btn.innerText = "[ COPIED! ]";
+            const original = btn.innerText; btn.innerText = "[ C0PIÉ! ]";
             setTimeout(() => btn.innerText = original, 2000);
         });
     }
 
     function clearArchives() {
-        if(confirm("PURGE?")) { localStorage.removeItem('pRetroFinal_v11'); showHistory(); }
+        if(confirm("RESET?")) { localStorage.removeItem('pRetroFinal_v11'); showHistory(); }
     }
 </script>
 </body>
